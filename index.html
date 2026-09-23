@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>CSE4144 Mid-Term Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +32,7 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+body{overflow-wrap:break-word;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
 .wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:230px minmax(0,1fr);gap:40px}
 nav.side{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;max-height:100vh;overflow:auto;padding-block:28px}
 nav.side .brand{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.04em}
@@ -47,6 +48,7 @@ h2{font-family:var(--display);font-stretch:85%;font-weight:750;font-size:1.75rem
 h3{font-family:var(--display);font-stretch:90%;font-weight:700;font-size:1.13rem;margin:26px 0 8px}
 h4{font-size:.95rem;margin:16px 0 4px;font-weight:600}
 p{margin:0 0 10px;max-width:72ch}
+a{color:var(--accent);text-underline-offset:2px}
 .lede{color:var(--muted);max-width:68ch}
 section.unit{padding-block:40px 8px;border-bottom:1px solid var(--rule)}
 .unit-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 14px;margin-bottom:6px}
@@ -76,6 +78,7 @@ table.dp td.hit{background:var(--mark);color:var(--mark-ink);font-weight:600}
 details.q{background:var(--surface);border:1px solid var(--rule);border-radius:8px}
 details.q summary{cursor:pointer;padding:10px 14px;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline;list-style:none}
 details.q summary::-webkit-details-marker{display:none}
+details.q summary>span:last-child{min-width:0;overflow-wrap:anywhere}
 details.q summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
 details.q[open] summary{border-bottom:1px solid var(--rule)}
 .sec{font-family:var(--mono);font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;background:var(--mark);color:var(--mark-ink);white-space:nowrap}
@@ -93,10 +96,10 @@ details.q[open] summary{border-bottom:1px solid var(--rule)}
 .check input:checked+span{color:var(--muted);text-decoration:line-through}
 .skip-demo{font-family:var(--mono);font-size:13px}
 @media (max-width:860px){
-  .wrap{grid-template-columns:1fr;gap:0}
+  .wrap{grid-template-columns:minmax(0,1fr);gap:0}
   nav.side{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ground);max-height:none;padding-block:10px;border-bottom:1px solid var(--rule);margin-inline:-16px;padding-inline:16px}
   nav.side .brand{display:none}
-  nav.side ol{flex-direction:row;overflow-x:auto;margin:0;gap:4px}
+  nav.side ol{flex-direction:row;overflow-x:auto;margin:0;gap:4px;min-width:0}
   nav.side a{white-space:nowrap;display:flex;border:1px solid var(--rule)}
   nav.side a .lec{display:none}
 }
@@ -123,7 +126,7 @@ details.q[open] summary{border-bottom:1px solid var(--rule)}
 <header class="top">
   <div class="eyebrow">Information Retrieval · CSE4144 · MUJ 2026–27</div>
   <h1>Mid-term study guide</h1>
-  <p class="lede">This guide covers Lectures 1–22 except Lec 17 (index compression) and Lec 18 (a tutorial), mapped to the course outcomes (COs) in the handout. Each unit gives you what to know, the formulas and algorithms, worked numericals checked by running them, and likely questions with answers you can hide. The notes follow your professor's slides first and Manning's <em>Introduction to IR</em> second. Where the two disagree, the <a href="#traps">errata</a> section says so.</p>
+  <p class="lede">This guide covers Lectures 1–22 except Lec 17 (index compression) and Lec 18 (a tutorial), mapped to the course outcomes (COs) in the handout. Each unit gives you what to know, the formulas and algorithms, worked numericals checked by running them, and likely questions with answers you can hide. The notes merge both sets of lecture slides and follow Manning's <em>Introduction to IR</em> where they are silent. Where the two disagree, the <a href="#traps">errata</a> section says so.</p>
 </header>
 
 <!-- ============ BLUEPRINT ============ -->
@@ -167,7 +170,8 @@ details.q[open] summary{border-bottom:1px solid var(--rule)}
       <li><strong>Query</strong>: the information need as the user expresses it. Types: keyword, natural language, Boolean, phrase.</li>
     </ul></div>
     <div class="pane"><h4>IR process (6 steps)</h4><ol>
-      <li>User enters a query through the UI</li><li>The query is processed and refined</li><li>Documents are preprocessed and indexed</li><li>The processed query is matched against the index</li><li>Matches are ranked by relevance</li><li>Ranked results are displayed</li></ol></div>
+      <li>User enters a query through the UI</li><li>The query is processed and refined</li><li>Documents are preprocessed and indexed</li><li>The processed query is matched against the index</li><li>Matches are ranked by relevance</li><li>Ranked results are displayed</li></ol>
+      <p style="margin-top:8px"><strong>Components</strong>: user · query · document collection · index · search engine · ranking module · results.</p></div>
   </div>
   <h3>Structured vs semi-structured vs unstructured</h3>
   <div class="tbl"><table><thead><tr><th>Structured</th><th>Semi-structured</th><th>Unstructured</th></tr></thead><tbody>
@@ -176,12 +180,66 @@ details.q[open] summary{border-bottom:1px solid var(--rule)}
   </tbody></table></div>
   <p><strong>IR vs. DBMS</strong>: a DBMS works on structured data with a fixed schema. Queries (SQL) are exact, results are exact sets and unranked, and a result is correct or incorrect. IR works on unstructured text. Queries are vague natural language, results are <em>ranked by relevance</em>, and a result is judged relevant or not relevant. Most IR systems deal with unstructured documents.</p>
   <h3>IR model</h3>
-  <p>An IR model has four parts: a document representation, a query representation, a matching function and a ranking function. Documents are usually represented as a set of index terms, not their raw text. The three <strong>classical models</strong> are Boolean, vector space and probabilistic.</p>
-  <p><strong>Why index at all?</strong> Grepping is slow on large corpora, handles <code>NOT</code> badly, can't do proximity (<em>Romans NEAR countrymen</em>) and can't rank. Indexing turns the text into a representation, most commonly an inverted index, ahead of time.</p>
+  <p>An IR model has four parts: a document representation, a query representation, a matching function and a ranking function. Documents are usually represented as a set of index terms, not their raw text. The three <strong>classical models</strong> are Boolean, vector space and probabilistic. A fourth, the <strong>language model</strong>, scores a document by the probability that it would <em>generate</em> the query. If a question asks for "four models", give Boolean, vector space, probabilistic and language model; if it says "classical", give the first three.</p>
+  <p><strong>Why index at all?</strong> Grepping is slow on large corpora, handles <code>NOT</code> badly, can't do proximity (<em>Romans NEAR countrymen</em>) and can't rank. Indexing turns the text into a representation, most commonly an inverted index, ahead of time. It is an <strong>offline operation</strong>: it runs once, before any user searches, and is redone only when documents change. Shakespeare's collected works are under a million words, so grepping them is tolerable; a billion web pages of a thousand words each are not.</p>
+  <h3>Relevance, and what users actually want</h3>
+  <p>A document is <strong>relevant</strong> if it satisfies the user's information need. Four factors decide it: <strong>topicality</strong> (is it about the right subject?), <strong>freshness</strong> (how current is it?), <strong>authority</strong> (.gov, .edu, IEEE, ACM, WHO vs an unknown blog) and <strong>fit to need</strong> ("Python tutorial for beginners" should not return advanced material). Since many documents are relevant, the system ranks them.</p>
+  <div class="grid2">
+    <div class="pane"><h4>Three types of information need</h4><ul>
+      <li><strong>Known-item search</strong> — the user knows the exact document and wants its location: <em>"C Programming Language by Dennis Ritchie"</em>.</li>
+      <li><strong>Precise-information search</strong> — the user wants one fact, not a document: <em>"Capital of Japan"</em>, <em>"What is TCP/IP?"</em></li>
+      <li><strong>Open-ended (topical) search</strong> — the user wants to explore a subject and many documents will do: <em>"Artificial Intelligence"</em>.</li>
+    </ul></div>
+    <div class="pane"><h4>Scarcity vs abundance</h4><ul>
+      <li><strong>Information scarcity</strong> — the needle-in-a-haystack problem. One rare document holds the answer: <em>"Who won the 1995 gold medal at XYZ University?"</em> This is a <em>recall</em> problem.</li>
+      <li><strong>Information abundance</strong> — thousands of near-identical documents: <em>"What is toxoplasmosis?"</em> The hard part is picking the most reliable one. This is a <em>precision and ranking</em> problem.</li>
+    </ul></div>
+  </div>
+
+  <h3>Three types of IR system</h3>
+  <div class="tbl"><table><thead><tr><th>Type</th><th>Searches</th><th>Main challenges</th></tr></thead><tbody>
+    <tr><td><strong>Web search</strong></td><td>Billions of pages across millions of machines</td><td>Crawling/spidering, efficient indexing, sub-second latency, SEO spam and malicious manipulation</td></tr>
+    <tr><td><strong>Enterprise / institutional</strong></td><td>One organisation's documents: patents, manuals, papers</td><td>Domain-specific vocabulary, centralised storage, access control (see the ACLs in Unit 6)</td></tr>
+    <tr><td><strong>Personal IR</strong></td><td>One user's own files: email, PDFs, photos (Spotlight, Windows Search)</td><td>Many file formats, must run quietly in the background, low maintenance, index must update the moment a file changes</td></tr>
+  </tbody></table></div>
+
+  <h3>Measuring performance: precision and recall</h3>
+  <div class="grid2">
+    <div class="pane"><h4>Formulas</h4><ul>
+      <li><strong>Precision</strong> = (relevant ∩ retrieved) ÷ retrieved. "Of what I returned, how much was useful?" Measures <em>accuracy</em>.</li>
+      <li><strong>Recall</strong> = (relevant ∩ retrieved) ÷ all relevant. "Of what was useful, how much did I find?" Measures <em>completeness</em>.</li>
+      <li>Both lie in [0,1]; higher is better on each.</li>
+    </ul></div>
+    <div class="pane"><h4>Worked example <span class="lecs">verified</span></h4><ul>
+      <li>Relevant in collection = 50, retrieved = 15, relevant among retrieved = 12.</li>
+      <li>Precision = 12/15 = <strong>0.80 (80%)</strong></li>
+      <li>Recall = 12/50 = <strong>0.24 (24%)</strong></li>
+      <li>Reading: most of what came back was useful, but three-quarters of the good documents were missed.</li>
+    </ul></div>
+  </div>
+  <p>Neither works alone, because each is trivially maximised by wrecking the other:</p>
+  <div class="tbl"><table><thead><tr><th>Strategy</th><th>Precision</th><th>Recall</th><th>Why it's useless</th></tr></thead><tbody>
+    <tr><td>Return every document (1000 docs, 20 relevant)</td><td>20/1000 = <strong>2%</strong></td><td>20/20 = <strong>100%</strong></td><td>The user wades through 980 irrelevant hits</td></tr>
+    <tr><td>Return one document, and it is relevant</td><td>1/1 = <strong>100%</strong></td><td>1/20 = <strong>5%</strong></td><td>Accurate but 19 relevant documents are missed</td></tr>
+    <tr><td>Balanced system</td><td>High</td><td>High</td><td>The actual goal</td></tr>
+  </tbody></table></div>
+  <p class="src">A one-line extra if you want it: F₁ = 2PR/(P+R) combines the two. For P = 0.80, R = 0.24 that is <strong>0.369</strong>, which punishes the low recall in a way an arithmetic mean (0.52) would hide. F₁ is not on either slide set, so offer it as an aside, not as the answer.</p>
+
+  <h3>IR beyond text: similarity search</h3>
+  <p>IR over images, audio, video and faces compares <em>features</em> — colour, shape, texture, pitch, rhythm, motion — instead of words. TinEye does reverse image search; Shazam identifies a song from a ten-second recording.</p>
+  <div class="tbl"><table><thead><tr><th>Boolean search</th><th>Similarity search</th></tr></thead><tbody>
+    <tr><td>Matches exact words</td><td>Matches similar content</td></tr>
+    <tr><td>Uses AND, OR, NOT</td><td>Uses feature comparison</td></tr>
+    <tr><td>Mostly text</td><td>Text, images, audio, video</td></tr>
+    <tr><td>Exact matching, exact results</td><td>Approximate matching, closest matches</td></tr>
+  </tbody></table></div>
   <div class="likely">
     <details class="q"><summary><span class="sec">A · 2</span><span>Differentiate structured and unstructured data with an example query of each.</span></summary><div class="ans"><p>Structured data sits in tables with a fixed schema and supports exact and range queries, e.g. <code>Salary &lt; 60000 AND Manager = Smith</code>. Unstructured data is free text with no schema. It is searched with keyword or concept queries, e.g. "pages about drug abuse", and results are ranked by relevance.</p></div></details>
     <details class="q"><summary><span class="sec">A · 2</span><span>What are the components of an IR model? Name the three classical models.</span></summary><div class="ans"><p>The components are a document model, a query model, a matching function and a ranking function. The classical models are Boolean, vector space and probabilistic.</p></div></details>
     <details class="q"><summary><span class="sec">B · 4</span><span>Why is linear scanning (grep) inadequate for IR? How does indexing help?</span></summary><div class="ans"><ul><li>It is slow: every query touches the whole corpus, so cost is O(corpus size).</li><li>NOT is non-trivial.</li><li>It can't do proximity queries.</li><li>It can't rank results.</li></ul><p>Indexing preprocesses documents once into an inverted index (term → sorted docIDs). A query then touches only the postings of its terms, which supports fast Boolean merges, positional queries and scoring.</p></div></details>
+    <details class="q"><summary><span class="sec">A · 2</span><span>Define precision and recall. A system retrieves 15 documents, 12 of which are relevant, out of 50 relevant documents in the collection. Compute both.</span></summary><div class="ans"><p>Precision = relevant retrieved ÷ retrieved = 12/15 = <strong>0.80</strong>. Recall = relevant retrieved ÷ total relevant = 12/50 = <strong>0.24</strong>. Precision measures the accuracy of the result set; recall measures its completeness.</p></div></details>
+    <details class="q"><summary><span class="sec">B · 4</span><span>Why can a system not simply maximise both precision and recall? Illustrate.</span></summary><div class="ans"><p>They trade off. Take 1000 documents with 20 relevant.</p><ul><li>Return all 1000: recall = 20/20 = 100%, precision = 20/1000 = 2%. Perfect recall, useless result set.</li><li>Return a single relevant document: precision = 1/1 = 100%, recall = 1/20 = 5%. Perfect precision, 19 relevant documents missed.</li></ul><p>Each is trivially maximised by degrading the other, so a useful system sits between them. F₁ = 2PR/(P+R) is the usual single-number summary.</p></div></details>
+    <details class="q"><summary><span class="sec">B · 3</span><span>Name the three types of information need and give an example query for each.</span></summary><div class="ans"><p><strong>Known-item search</strong> — the user knows the exact document and wants its location: <em>"C Programming Language by Dennis Ritchie"</em>. <strong>Precise-information search</strong> — the user wants one fact, not a document: <em>"Capital of Japan"</em>. <strong>Open-ended (topical) search</strong> — the user wants to explore a subject and many documents will do: <em>"Artificial Intelligence"</em>.</p></div></details>
   </div>
 </section>
 
@@ -191,6 +249,7 @@ details.q[open] summary{border-bottom:1px solid var(--rule)}
   <ul>
     <li>The oldest classical model, based on Boolean logic and set theory. A document is a <em>set</em> of keywords.</li>
     <li>A query is a Boolean expression using AND, OR and NOT. Retrieval is <strong>exact match</strong>: a document either satisfies the query or it doesn't, and nothing is ranked.</li>
+    <li>1 = the term is present in the document, 0 = absent (Boole's two-valued logic). <strong>AND narrows</strong> (all terms required), <strong>OR broadens</strong> (any term), <strong>NOT excludes</strong>. Truth values: <code>A∧B</code> is 1 only for 1,1; <code>A∨B</code> is 0 only for 0,0; <code>¬A</code> flips. Parentheses control evaluation order: <code>(AI OR ML) AND Python</code> evaluates the OR first.</li>
     <li><strong>Term-document incidence matrix</strong>: rows are terms, columns are documents, and a cell is 1 if the document contains the term.</li>
   </ul>
   <h3>Worked: Brutus AND Caesar AND NOT Calpurnia</h3>
@@ -204,8 +263,9 @@ AND             100100  → Antony &amp; Cleopatra, Hamlet</pre>
   <div class="formula">N = 1M docs × ~1K terms each → 10⁹ tokens (~6 GB of text)<br>M = 500K distinct terms → matrix = 500K × 1M = 5×10¹¹ cells<br>At most 10⁹ ones → ≥ 99.8% zeros → extremely sparse → store only the 1s = inverted index</div>
   <div class="grid2">
     <div class="pane"><h4>Advantages</h4><ul><li>Simple, precise, predictable</li><li>Easy to implement with set operations</li><li>Professionals like it (e.g. Westlaw legal search, which has used Boolean since 1975)</li></ul></div>
-    <div class="pane"><h4>Limitations</h4><ul><li>No ranking: feast or famine (AND returns too few, OR too many)</li><li>Users must write precise expressions</li><li>Ignores term frequency and importance</li><li>Without an index it scans every document: O(N×M)</li></ul></div>
+    <div class="pane"><h4>Limitations</h4><ul><li>No ranking: feast or famine (AND returns too few, OR too many)</li><li>Users must write precise expressions, and complex queries are hard for ordinary users to write</li><li>Ignores term frequency and importance, so no partial relevance</li><li>No awareness of synonyms or meaning</li><li>Without an index it scans every document: O(N×M)</li></ul></div>
   </div>
+  <p><strong>Applications</strong>: digital libraries and library catalogues, research-paper and patent databases, legal search, medical literature search, enterprise search. These are domains where users are trained, want reproducible result sets, and need to be sure nothing was silently dropped by a ranker.</p>
   <div class="likely">
     <details class="q"><summary><span class="sec">B · 3</span><span>Given an incidence matrix, evaluate <code>(A OR B) AND NOT C</code>.</span></summary><div class="ans"><p>Method: write each term's bit-vector. OR the vectors for A and B. Complement C. AND the results. Read off the documents with a 1. Show every intermediate vector: that is where the marks are.</p></div></details>
     <details class="q"><summary><span class="sec">A · 2</span><span>Why is the term-document matrix impractical for large collections?</span></summary><div class="ans"><p>It is huge (500K × 1M = 5×10¹¹ cells) and extremely sparse (at most 10⁹ ones, so at least 99.8% zeros). Storing only the 1s, as an inverted index, is far more compact.</p></div></details>
@@ -215,7 +275,14 @@ AND             100100  → Antony &amp; Cleopatra, Hamlet</pre>
 <!-- ============ U3 ============ -->
 <section class="unit" id="u3">
   <div class="unit-head"><h2>Inverted index &amp; processing Boolean queries</h2><span class="chip c1">CO1</span><span class="chip c2">CO2</span><span class="lecs">Lec 5–6 + skip-pointer reading</span></div>
-  <p><strong>Inverted index</strong>: a <em>dictionary</em> of terms, each with its document frequency (df) and a pointer to a <em>postings list</em> of docIDs <strong>sorted by docID</strong>. Linked lists allow easy insertion but cost pointer overhead. Arrays are compact but hard to update.</p>
+  <p><strong>Inverted index</strong>: a <em>dictionary</em> of terms, each with its document frequency (df), its collection frequency (cf, total occurrences across the collection) and a pointer to a <em>postings list</em> of docIDs <strong>sorted by docID</strong>. Each docID in the list is a <em>posting</em>. Linked lists allow easy insertion but cost pointer overhead. Arrays are compact but hard to update.</p>
+  <div class="tbl"><table><thead><tr><th></th><th>Forward index</th><th>Inverted index</th></tr></thead><tbody>
+    <tr><td>Direction</td><td>Document → words</td><td>Word → documents</td></tr>
+    <tr><td>Answers</td><td>"What words are in this document?"</td><td>"Which documents contain this word?"</td></tr>
+    <tr><td>Example</td><td>D1 → {Machine, Learning}</td><td>Learning → {D1, D2, D3}</td></tr>
+    <tr><td>Role</td><td>What parsing produces first</td><td>What queries actually search</td></tr>
+  </tbody></table></div>
+  <p>The book analogy: the forward index is a <em>page</em> (page 1 contains Machine, Learning, AI); the inverted index is the <em>index at the back</em> (Learning → pages 1, 2). The term-document matrix of Unit 2 stores both directions and is almost all zeros, which is why only the 1s are kept.</p>
   <h3>Construction (Indexer steps)</h3>
   <ol><li>Tokenize, then apply linguistic modules (normalize, stem): <code>Friends Romans Countrymen → friend roman countryman</code></li><li>Emit (term, docID) pairs</li><li><strong>Sort by term, then docID</strong>. This is the core indexing step</li><li>Merge duplicate entries in the same document and add frequency</li><li>Split into a Dictionary file (term, df, pointer) and a Postings file</li></ol>
   <h3>Merge algorithms: O(x + y)</h3>
@@ -234,6 +301,18 @@ AND NOT (p, q): walk both; output docID(p) only when it is not in q.</pre>
   <ul><li>For an AND of t terms, process terms in <strong>increasing df</strong>: start with the smallest set and keep cutting. This is why df is stored in the dictionary.</li>
   <li>Slide example: Brutus (7), Calpurnia (8), Caesar (2) → execute <code>(Caesar AND Brutus) AND Calpurnia</code>.</li>
   <li>For <code>(madding OR crowd) AND (ignoble OR strife)</code>, estimate each OR's size as the <em>sum</em> of its dfs (a conservative upper bound), then process the ORs in increasing size.</li></ul>
+  <p>If a question asks you to "discuss query optimisation techniques" for 5–8 marks, lead with the df ordering above and then give breadth:</p>
+  <div class="tbl"><table><thead><tr><th>Technique</th><th>What it does</th></tr></thead><tbody>
+    <tr><td><strong>Order postings by size</strong></td><td>Intersect the shortest lists first so the intermediate result stays small. A = 10,000, B = 500, C = 20 postings → evaluate (C ∩ B) ∩ A</td></tr>
+    <tr><td><strong>Skip pointers</strong></td><td>Jump over postings that cannot match (below)</td></tr>
+    <tr><td><strong>Boolean re-association</strong></td><td><code>(A AND B) AND C</code> ≡ <code>A AND (B AND C)</code>; pick the cheaper grouping</td></tr>
+    <tr><td><strong>Query rewriting</strong></td><td>Synonym expansion: <code>car repair</code> → <code>(car OR automobile) repair</code>, which raises recall</td></tr>
+    <tr><td><strong>Caching</strong></td><td>Popular queries ("weather today") are served from cache rather than recomputed</td></tr>
+    <tr><td><strong>Term-at-a-Time (TAAT)</strong></td><td>Process one term's whole postings list, accumulating partial scores, then move to the next term. Every candidate stays in memory until the last term is done</td></tr>
+    <tr><td><strong>Document-at-a-Time (DAAT)</strong></td><td>Walk all lists together in docID order, finishing one document's score before moving on. Less memory, and a score is final as soon as you pass it — which is what makes the next two possible. Modern engines prefer DAAT</td></tr>
+    <tr><td><strong>Dynamic pruning</strong></td><td>Skip documents that cannot reach the top-k. Named algorithms: <strong>WAND</strong> and <strong>Block-Max WAND (BMW)</strong>, used in Google, Bing and Elasticsearch</td></tr>
+    <tr><td><strong>Early termination</strong></td><td>Stop once the requested top-10 is settled</td></tr>
+  </tbody></table></div>
 
   <h3>Skip pointers</h3>
   <ul><li>Skip pointers are added at indexing time. They let an AND intersection jump past postings that can't match, giving sublinear behaviour in practice.</li>
@@ -274,7 +353,7 @@ Result: {3, 5, 89, 97, 100}</pre>
   <h3>Phrase and proximity queries</h3>
   <div class="grid2">
     <div class="pane"><h4>Biword index</h4><ul><li>Index every consecutive pair of terms: "friends romans", "romans countrymen".</li><li>A longer phrase becomes an AND of biwords (<em>stanford university</em> AND <em>university palo</em> AND <em>palo alto</em>), which needs post-filtering and can give <strong>false positives</strong>.</li><li><strong>Extended biwords</strong>: POS-tag the text, then treat any <code>N X* N</code> sequence as one term (<em>king of Denmark</em>, <em>catcher in the rye</em>).</li><li>Rarely used, because false positives and vocabulary blow-up.</li></ul></div>
-    <div class="pane"><h4>Positional index</h4><ul><li>Each posting is <code>docID: ⟨pos1, pos2, …⟩</code>.</li><li>Answers phrases exactly and supports proximity (<code>employment /4 place</code>).</li><li>Takes much more space (2–4× a non-positional index) and costs more per query.</li><li><strong>Combination scheme</strong>: store frequent phrases (<em>Michael Jackson</em>) as biwords and handle all other phrases positionally.</li></ul></div>
+    <div class="pane"><h4>Positional index</h4><ul><li>Each posting is <code>docID: ⟨pos1, pos2, …⟩</code>.</li><li>Answers phrases exactly and supports proximity (<code>employment /4 place</code> = within 4 words; Westlaw also uses <code>/s</code> same sentence and <code>/p</code> same paragraph, alongside <code>&amp;</code> for AND, <code>|</code> for OR, <code>%</code> for NOT and <code>" "</code> for a phrase).</li><li>Takes much more space (2–4× a non-positional index) and costs more per query.</li><li><strong>Combination scheme</strong>: store frequent phrases (<em>Michael Jackson</em>) as biwords and handle all other phrases positionally.</li></ul></div>
   </div>
   <details class="q"><summary><span class="sec">B · 4</span><span>Worked: using the positional postings, where does "to be" occur in doc 4?</span></summary><div class="ans">
     <pre>to, doc 4: ⟨8, 16, 190, 429, 433⟩
@@ -282,13 +361,40 @@ be, doc 4: ⟨17, 191, 291, 430, 434⟩
 Look for pos(be) = pos(to) + 1 → (16,17) (190,191) (429,430) (433,434)</pre>
     <p>Positions 429–434 hold <em>to be or not to be</em> (to=429, be=430, to=433, be=434), so <strong>doc 4 matches</strong>.</p></div></details>
   <details class="q"><summary><span class="sec">A · 2</span><span>Boolean AND vs the proximity operator.</span></summary><div class="ans"><p>AND needs both terms to appear anywhere in the document and ignores order and distance. Proximity (<code>NEAR/n</code>) needs them within n words, which gives more precise, context-specific results but requires positional postings.</p></div></details>
-  <details class="q"><summary><span class="sec">B · 5</span><span>Write the intersect algorithm and trace Brutus [2,4,8,16,32,64,128] AND Caesar [1,2,3,5,8,13,21,34]. What is its complexity?</span></summary><div class="ans"><p>2=2 is added. Then 4 vs 3 (advance Caesar), 4 vs 5 (advance Brutus), 8 vs 5, 8 vs 8 is added, 16 vs 13, 16 vs 21, 32 vs 21, 32 vs 34, 64 vs 34, and Caesar ends. <strong>Answer {2, 8}</strong>. The cost is O(x + y) because each comparison advances at least one pointer, and it depends on the lists being sorted by docID.</p></div></details>
+  <details class="q"><summary><span class="sec">B · 5</span><span>Write the intersect algorithm and trace Brutus [2,4,8,16,32,64,128] AND Caesar [1,2,3,5,8,13,21,34]. What is its complexity?</span></summary><div class="ans"><p>2 vs 1 (advance Caesar), 2=2 is added. Then 4 vs 3 (advance Caesar), 4 vs 5 (advance Brutus), 8 vs 5, 8 vs 8 is added, 16 vs 13, 16 vs 21, 32 vs 21, 32 vs 34, 64 vs 34, and Caesar ends. <strong>Answer {2, 8}</strong>. The cost is O(x + y) because each comparison advances at least one pointer, and it depends on the lists being sorted by docID.</p></div></details>
+  <details class="q"><summary><span class="sec">A · 2</span><span>Distinguish a forward index from an inverted index.</span></summary><div class="ans"><p>A forward index maps <strong>document → words</strong> and answers "what words are in this document?" (D1 → Machine, Learning). An inverted index maps <strong>word → documents</strong> and answers "which documents contain this word?" (Learning → D1, D2, D3). The forward index is what parsing produces; the inverted index is what queries search, because it lets a query touch only the postings of its terms instead of every document.</p></div></details>
+  <details class="q"><summary><span class="sec">B · 4</span><span>Compare term-at-a-time and document-at-a-time query processing.</span></summary><div class="ans"><p><strong>TAAT</strong> processes one term's entire postings list, accumulating partial scores in an accumulator array, then moves to the next term. It is simple, but every candidate document must stay in memory and no score is final until the last term is done.</p><p><strong>DAAT</strong> advances all postings lists together in docID order and completes one document's score before moving on. It needs less memory and, crucially, a document's score is final as soon as you pass it — which is what makes dynamic pruning (WAND) and early termination possible. Modern engines prefer DAAT for exactly this reason.</p></div></details>
+  <details class="q"><summary><span class="sec">C · 6</span><span>Discuss the techniques used for query optimisation in an IR system.</span></summary><div class="ans"><p>Lead with the one that carries the marks, then give breadth:</p><ol><li><strong>Order postings by size</strong> — process terms in increasing df so intermediate results stay small. A = 10,000, B = 500, C = 20 postings → evaluate (C ∩ B) ∩ A, not (A ∩ B) ∩ C.</li><li><strong>Skip pointers</strong> — √P evenly spaced pointers let the merge jump past postings that cannot match.</li><li><strong>Boolean re-association</strong> — (A AND B) AND C ≡ A AND (B AND C); choose the cheaper grouping.</li><li><strong>Query rewriting</strong> — synonym expansion to raise recall.</li><li><strong>Caching</strong> of frequent queries.</li><li><strong>TAAT vs DAAT</strong> — DAAT is preferred because a score completes as you pass the document, which enables ranking and pruning.</li><li><strong>Dynamic pruning</strong> — WAND and Block-Max WAND skip documents that cannot enter the top-k.</li><li><strong>Early termination</strong> — stop once the top-10 is settled.</li></ol></div></details>
 </section>
 
 <!-- ============ U4 ============ -->
 <section class="unit" id="u4">
   <div class="unit-head"><h2>Document &amp; term processing</h2><span class="chip c1">CO1</span><span class="chip c2">CO2</span><span class="lecs">Lec 7–9</span></div>
-  <p><strong>Document delineation</strong>: before indexing you have to settle the format (pdf, docx, html), the language and the character encoding. Each is a classification problem, usually solved with heuristics. You also have to choose the <em>document unit</em>: a file, an email, an email with 5 attachments, a group of files. There is no single right answer. It's a design decision.</p>
+  <h3>Document delineation</h3>
+  <p><strong>Document delineation</strong> finds the boundaries of individual documents in a collection — where one document ends and the next begins — and gives each a docID. It runs <em>before</em> document processing. Part of it is settling the format (pdf, docx, html), the language and the character encoding; each is a classification problem, usually solved with heuristics. The rest is choosing the <em>document unit</em>: a file, an email, an email with 5 attachments, a group of files. There is no single right answer; it is a design decision.</p>
+  <div class="grid2">
+    <div class="pane"><h4>Three kinds</h4><ul>
+      <li><strong>Physical</strong> — explicit markers: <code>&lt;doc&gt;…&lt;/doc&gt;</code> tags, page breaks, chapter breaks, file boundaries.</li>
+      <li><strong>Logical</strong> — inferred from content structure: headings, titles, sections, paragraph patterns.</li>
+      <li><strong>Automatic</strong> — ML/NLP boundary detection, for crawled pages, email threads, news archives, social media and OCR scans.</li>
+    </ul></div>
+    <div class="pane"><h4>Delineation vs processing</h4>
+      <div class="tbl"><table><thead><tr><th></th><th>Delineation</th><th>Processing</th></tr></thead><tbody>
+      <tr><td>Purpose</td><td>Find document boundaries</td><td>Prepare a document for indexing</td></tr>
+      <tr><td>Input</td><td>A collection or raw stream</td><td>One individual document</td></tr>
+      <tr><td>Output</td><td>Separate documents with docIDs</td><td>Processed index terms</td></tr>
+      <tr><td>Order</td><td>First</td><td>Second</td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+  <p>The pipeline to draw: <em>collection → delineation → individual documents → processing (tokenise, stop words, normalise, stem) → index construction → search</em>.</p>
+  <h4>Granularity and passage retrieval</h4>
+  <p>Indexing a 400-page book as one document causes <strong>dilution</strong>: a high tf for the query term is washed out by thousands of unrelated terms, and the user wanted the paragraph, not a 400-page PDF. <strong>Fine granularity</strong> (sentences) gives precise matches but loses context; <strong>coarse granularity</strong> (sections, pages) keeps context but adds noise. The fixes are <strong>chunking</strong> (cut text into blocks before indexing), <strong>static passage retrieval</strong> (uniform pre-cut chunks, e.g. 256–512 tokens with ~10% overlap, or logical sections), <strong>dynamic passage retrieval</strong> (a sliding window scoring term density around query hits at query time) and <strong>TextTiling</strong>, which detects topic shifts as dips in block-based cosine similarity between adjacent token sequences.</p>
+  <h4>Ingestion details</h4>
+  <ul><li><strong>Encoding</strong>: normalise ASCII, UTF-16 and ISO-8859-1 input into UTF-8. Unicode has two normal forms — <strong>NFD</strong> decomposes <em>é</em> into <code>e</code> + a combining acute accent, <strong>NFC</strong> recomposes it. Pick one before you sort or compare terms.</li>
+  <li><strong>HTML/XML stripping</strong>: replace block tags with newlines, or <code>&lt;/h1&gt;Content</code> merges into a junk term like <code>HeaderContent</code>.</li>
+  <li><strong>OCR noise</strong>: scanning confuses <code>cl</code>→<code>d</code> and <code>rn</code>→<code>m</code>, which is exactly what the tolerant retrieval of Unit 5 has to repair.</li></ul>
+  <h3>Word, token, type, term</h3>
   <div class="tbl"><table><thead><tr><th>Word</th><th>Token</th><th>Type</th><th>Term</th></tr></thead><tbody><tr><td>A delimited character string as it appears in the text</td><td>An <em>instance</em> of a word in a document</td><td>The equivalence class of identical tokens</td><td>A normalized type (case, morphology, spelling) that goes in the dictionary</td></tr></tbody></table></div>
   <details class="q"><summary><span class="sec">A · 2</span><span>"In June, the dog likes to chase the cat in the barn." How many tokens and how many types?</span></summary><div class="ans"><p><strong>12 tokens.</strong> Types: <strong>10</strong> without case folding (In and in differ, and "the" is counted once), or <strong>9</strong> with case folding. State your assumption.</p></div></details>
   <h3>Tokenization issues</h3>
@@ -308,7 +414,8 @@ Look for pos(be) = pos(to) + 1 → (16,17) (190,191) (429,430) (433,434)</pre>
     <tr><td>Example</td><td>automate, automatic, automation → automat</td><td>am, are, is → be; car's, cars → car</td></tr>
     <tr><td>Morphology</td><td>Inflectional <em>and</em> derivational</td><td>Mainly inflectional (cutting → cut)</td></tr>
   </tbody></table></div>
-  <p><strong>Effect on retrieval</strong>: stemming raises <em>recall</em> but can hurt <em>precision</em>. It helps [tartan sweaters]. It hurts [operational AND research], [operating AND system] and [operative AND dentistry], because Porter maps operate, operating, operational and operative all to <em>oper</em>. Stemmer errors: organization→organ, university→universe, policy→police.</p>
+  <p><strong>Effect on retrieval</strong>: stemming raises <em>recall</em> but can hurt <em>precision</em>. It helps [tartan sweaters]. It hurts [operational AND research], [operating AND system] and [operative AND dentistry], because Porter maps operate, operating, operational and operative all to <em>oper</em>. Two named error types: <strong>over-stemming</strong> (a false positive) conflates unrelated words to one root — <em>organization</em> and <em>organ</em> both → <code>organ</code>, and likewise <em>university</em>→<em>universe</em>, <em>policy</em>→<em>police</em> — and hurts <em>precision</em>; <strong>under-stemming</strong> (a false negative) leaves forms of the same word apart — <em>european</em> and <em>europe</em> do not merge — and hurts <em>recall</em>. A stemmer is tuned to trade one against the other.</p>
+  <p><strong>Morphological processing</strong> is the principled version: analyse a word into prefix + root + suffix. <em>unhappiness</em> → <code>un</code> + <code>happy</code> + <code>ness</code>; <em>rewriting</em> → <code>re</code> + <code>write</code> + <code>ing</code>. It lets <em>compute, computer, computing, computation, computational</em> all reach <code>compute</code>, and it is the distinction behind inflectional (cutting→cut) vs derivational (destruction→destroy) morphology above.</p>
   <h3>Porter stemmer</h3>
   <ul><li>Five phases applied in sequence, each a set of condition → action rules. Within a compound command, the rule matching the <strong>longest suffix</strong> wins, and only one rule per step fires.</li>
   <li><strong>Measure m</strong>: the number of VC sequences in <code>[C](VC)<sup>m</sup>[V]</code>. <em>tree</em> m=0, <em>trees / oak</em> m=1, <em>private</em> m=2.</li>
@@ -320,10 +427,12 @@ Step 2 : (m&gt;0) ATIONAL→ATE (relational→relate)  TIONAL→TION
 Step 3 : (m&gt;0) ICATE→IC  (m&gt;0) ATIVE→∅
 Step 4 : (m&gt;1) EMENT→∅ (replacement→replac, cement→cement)  (m&gt;1) ATION→∅ (excitation→excit, nation→nation)</pre>
   <p class="src">Your slide writes "sky → ski" under 1c. By Porter's actual <code>(*v*)</code> condition the stem "sk" has no vowel, so sky stays <em>sky</em>. If this comes up, give the rule-based answer and mention the condition.</p>
-  <p>The other stemmers are <strong>Lovins</strong> (single pass, longest-suffix removal, about 250 rules) and <strong>Paice</strong>.</p>
+  <p>The other stemmers are <strong>Lovins</strong> (single pass, longest-suffix removal, about 250 rules), <strong>Paice</strong> and <strong>Snowball</strong> (Porter's own later framework). If asked to name stemming algorithms: Porter, Lovins, Paice, Snowball.</p>
   <div class="likely">
     <details class="q"><summary><span class="sec">B · 4</span><span>Should a modern search engine remove stop words? Justify.</span></summary><div class="ans"><p>Removing them used to be standard because stop words take about 30% of postings and carry little meaning. Modern engines keep them for phrase queries ("King of Denmark"), titles ("To be or not to be") and relational queries ("flights to Bangalore"). Compression and good query optimization (process rare terms first, impact ordering) keep the cost down.</p></div></details>
     <details class="q"><summary><span class="sec">B · 5</span><span>Apply Porter Step 1 to: caresses, ponies, cats, agreed, plastered, motoring, happy.</span></summary><div class="ans"><p>caress, poni, cat, agree, plaster, motor, happi. Name the rule used for each.</p></div></details>
+    <details class="q"><summary><span class="sec">B · 4</span><span>What is document delineation? Name its three types and say how it differs from document processing.</span></summary><div class="ans"><p>Document delineation identifies the boundaries of individual documents in a collection — where one ends and the next begins — and assigns each a docID. Three types: <strong>physical</strong> (explicit markers such as <code>&lt;doc&gt;</code> tags, page or file breaks), <strong>logical</strong> (inferred from headings, titles, sections) and <strong>automatic</strong> (ML/NLP boundary detection, used for crawled pages, email threads and OCR scans).</p><p>It differs from document processing in purpose, input and order: delineation takes the whole collection and outputs separate documents, and runs <em>first</em>; processing takes one document and outputs index terms via tokenisation, stop-word removal, normalisation and stemming.</p></div></details>
+    <details class="q"><summary><span class="sec">B · 3</span><span>Distinguish over-stemming from under-stemming with an example of each.</span></summary><div class="ans"><p><strong>Over-stemming</strong> (a false positive) conflates unrelated words to the same root: <em>organization</em> and <em>organ</em> both stem to <code>organ</code>; likewise <em>university</em>→<em>universe</em> and <em>policy</em>→<em>police</em>. It hurts precision. <strong>Under-stemming</strong> (a false negative) leaves forms of the same word apart: <em>european</em> and <em>europe</em> do not merge. It hurts recall. A stemmer is tuned to trade one against the other.</p></div></details>
   </div>
 </section>
 
@@ -335,7 +444,9 @@ Step 4 : (m&gt;1) EMENT→∅ (replacement→replac, cement→cement)  (m&gt;1) 
   <div class="grid2">
     <div class="pane"><h4>Hash table</h4><ul><li>O(1) lookup</li><li>Collisions need handling</li><li><strong>No prefix search</strong>: automat* is impossible, and minor variants (resume/résumé) hash to unrelated slots</li><li>Must be rehashed as the vocabulary grows</li></ul></div>
     <div class="pane"><h4>Search tree (binary / B-tree)</h4><ul><li>O(log M) lookup, which requires a balanced tree</li><li>Supports <strong>prefix and range queries</strong></li><li>A binary tree needs rebalancing</li><li>A B-tree lets each internal node have between a and b children (e.g. [2,4]). It collapses levels, suits disk blocks, and rebalances less often</li><li>Needs a total ordering of characters</li></ul></div>
+    <div class="pane"><h4>Trie / TST / FST</h4><ul><li><strong>Trie</strong> (or ternary search tree): characters branch from the root, and a marked node ends a term. Lookup is O(term length) and <strong>prefix search is native</strong>, so it is the best structure for <code>comput*</code></li><li><strong>FST / DAWG</strong>: a directed acyclic graph that shares both prefixes <em>and</em> suffixes, so it is very compact and still prefix-friendly. This is what Lucene actually uses</li><li>A <strong>sorted array</strong> is the simple middle ground: O(log N) binary search and prefix-friendly, but costly to insert into</li></ul></div>
   </div>
+  <p>The examinable trade-off is the hash table against everything else: hashing is fastest for exact lookup but cannot enumerate a prefix, which is why tolerant retrieval needs a tree or trie.</p>
   <h3>Wildcard queries</h3>
   <ul><li><strong>Trailing</strong> <code>mon*</code>: use a B-tree and take all w with mon ≤ w &lt; moo. The matches are contiguous.</li>
   <li><strong>Leading</strong> <code>*mon</code>: use a <em>reverse</em> B-tree (terms spelled backwards): nom ≤ w &lt; non.</li>
@@ -383,6 +494,7 @@ Step 4 : (m&gt;1) EMENT→∅ (replacement→replac, cement→cement)  (m&gt;1) 
       <tr><th>t</th><td>4</td><td>4</td><td>3</td><td>2</td><td>3</td></tr>
     </table></div><p class="src">Other checked values: cat→dog 3, kitten→sitting 3, sunday→saturday 3, intention→execution 5.</p></div>
   </div>
+  <p><strong>Damerau–Levenshtein</strong> adds a fourth operation to insert/delete/substitute: <strong>transposition</strong> of two adjacent characters, at cost 1. It matters because transposition is the commonest typing error — <em>teh</em> → <em>the</em> is distance 1 under Damerau but 2 under plain Levenshtein. Unless a question says otherwise use plain Levenshtein, and say which one you used.</p>
   <p><strong>Weighted edit distance</strong> makes the cost depend on the characters involved. Keyboard neighbours are cheaper (m→n costs less than m→q). It needs a weight matrix as input.</p>
   <p><strong>Cutting candidates</strong>: computing edit distance to every term is too slow. Instead, take terms sharing k-grams with the query, threshold on Jaccard, then compute edit distance on the survivors. Other heuristics: consider only terms with the same first letter, or use permuterm rotations.</p>
   <div class="formula">Jaccard(X, Y) = |X ∩ Y| / |X ∪ Y|   (0 = disjoint, 1 = identical)<br>november vs december trigrams: {nov,ove,vem,emb,mbe,ber} vs {dec,ece,cem,emb,mbe,ber}<br>∩ = 3, ∪ = 9 → J = 0.33<br>bord vs board bigrams: {bo,or,rd} vs {bo,oa,ar,rd} → ∩ = 2, ∪ = 5 → J = 0.4</div>
@@ -397,10 +509,10 @@ Step 4 : (m&gt;1) EMENT→∅ (replacement→replac, cement→cement)  (m&gt;1) 
     <tr><td>Karlson vs Carlson</td><td>Same sound, different first letter</td><td class="mono">K642 ≠ C642</td></tr>
     <tr><td>Rodgers vs Rogers</td><td>The d changes the code</td><td class="mono">R326 ≠ R262</td></tr>
   </tbody></table></div>
-  <p>The idea behind Soundex is that vowels are interchangeable and similar-sounding consonants share a class. It dates from 1918 (Odell &amp; Russell, US census), works mainly for names, and fails when the initials differ.</p>
+  <p>The idea behind Soundex is that vowels are interchangeable and similar-sounding consonants share a class. It dates from 1918 (Odell &amp; Russell, US census), works mainly for names, and fails when the initials differ. Soundex is one of a family of phonetic algorithms — the others worth naming are <strong>Metaphone</strong>, <strong>Double Metaphone</strong> and <strong>NYSIIS</strong> — but Soundex is the only one you would compute by hand.</p>
   <div class="likely">
     <details class="q"><summary><span class="sec">C · 6</span><span>Compare the permuterm and k-gram indexes for <code>m*n</code> and <code>fi*mo*er</code>.</span></summary><div class="ans"><p><strong>Permuterm:</strong> <code>m*n</code> → <code>n$m*</code>, a single prefix lookup. <code>fi*mo*er</code> → <code>er$fi*</code>, then post-filter the candidates for "mo" in the right place.</p><p><strong>Bigram:</strong> <code>m*n</code> → <code>$m AND n$</code>, then post-filter. <code>fi*mo*er</code> → <code>$f AND fi AND mo AND er AND r$</code>, then post-filter (e.g. <em>fishmonger</em> passes; a term matching the bigrams in the wrong order fails).</p><p>Permuterm is faster but uses about 4× the dictionary. k-gram uses less space but needs a generate-then-filter step.</p></div></details>
-    <details class="q"><summary><span class="sec">A · 2</span><span>Why can't a hash table serve wildcard queries?</span></summary><div class="ans"><p>Hashing scatters lexically adjacent terms, so there is no way to enumerate all terms with a prefix. A B-tree keeps terms in order, so a prefix is a contiguous range.</p></div></details>
+    <details class="q"><summary><span class="sec">A · 2</span><span>Why can't a hash table serve wildcard queries?</span></summary><div class="ans"><p>Hashing scatters lexically adjacent terms, so there is no way to enumerate all terms with a prefix. A B-tree keeps terms in order, so a prefix is a contiguous range; a trie or FST goes further and makes the prefix a path from the root.</p></div></details>
     <details class="q"><summary><span class="sec">B · 3</span><span>Why is <code>*ing</code> hard on a normal B-tree, and how do you fix it?</span></summary><div class="ans"><p>The B-tree orders by the start of the word, so words ending in <em>ing</em> (computing, reading, running) are scattered. Fix it with a reverse B-tree (look up <em>gni*</em>) or permuterm (<code>ing$*</code>).</p></div></details>
   </div>
 </section>
@@ -440,8 +552,36 @@ Step 4 : (m&gt;1) EMENT→∅ (replacement→replac, cement→cement)  (m&gt;1) 
   <li>Merging the auxiliary index into the main one each time it reaches n postings costs <strong>Θ(T²/n)</strong>, which is quadratic.</li>
   <li><strong>Logarithmic merging</strong> keeps indexes I₀, I₁, … of sizes n, 2n, 4n, …. When Z₀ fills, it merges upward like a binary counter. Cost is <strong>Θ(T log(T/n))</strong>. The price is that a query has to search up to log(T/n) indexes. Lucene and Elasticsearch work this way.</li>
   <li>Why not one file per postings list? File systems choke on millions of small files. One big file means rewriting everything on each merge.</li>
-  <li><strong>MapReduce</strong>: a master assigns splits. <em>Parsers</em> (map) emit (term, docID) pairs partitioned by term range (a–f, g–p, q–z) into segment files. <em>Inverters</em> (reduce) each collect one term range, sort, and write postings. Failed tasks are reassigned.</li>
-  <li><strong>ACLs</strong>: a user-document access matrix, inverted per user. Results are intersected with the user's ACL postings.</li></ul>
+  <li>Querying under logarithmic merging means searching Z₀ plus every surviving I₀, I₁, I₂ … and taking the <strong>union</strong> of their postings. That is log(T/n) indexes, in practice under 20, so it is manageable — and documents become searchable immediately after indexing.</li></ul>
+  <h3>Distributed indexing</h3>
+  <ul><li>Two ways to split an index across machines. <strong>Document partitioning</strong>: each machine holds a full index over a subset of documents, so every query goes to every machine and the results are merged. Simpler and resilient, and the usual choice. <strong>Term partitioning</strong>: each machine holds all postings for a subset of terms, so a query touches only the machines holding its terms, but multi-term queries have to ship large postings lists between machines.</li>
+  <li><strong>MapReduce</strong> (Dean &amp; Ghemawat 2004): a master assigns splits. <em>Parsers</em> (map) emit (term, docID) pairs partitioned by <strong>key range</strong> (a–f, g–p, q–z) into segment files — that is term partitioning. <em>Inverters</em> (reduce) each collect one key range, sort, and write postings.</li>
+  <li><strong>Fault tolerance</strong>, since machines in a large cluster fail routinely: <em>reassignment</em> (if a parser dies the master gives its 64 MB split to another machine), <em>immutable segment files</em> (map output is read-only, so re-running a task is always safe — there are no partial writes to undo) and <em>checkpointing</em> of the map phase's state. This is what makes petabyte-scale indexing possible on cheap commodity hardware.</li></ul>
+  <h3>Security and access control lists</h3>
+  <div class="grid2">
+    <div class="pane"><h4>The structure</h4><ul>
+      <li>Scenario: enterprise search. Managers may see <em>Salaries.pdf</em>; interns may not.</li>
+      <li>Build a <strong>user–document access matrix</strong>: rows = users, columns = documents, cell (i,j) = 1 if user i may read document j.</li>
+      <li>Invert it per user into an <strong>ACL postings list</strong>: <code>User_Alok → [doc5, doc7, doc9]</code>.</li>
+      <li>Note the symmetry with the term–document incidence matrix of Unit 2 — same object, different rows.</li>
+    </ul></div>
+    <div class="pane"><h4>Query processing with ACLs</h4><ol>
+      <li>Text search returns candidates, e.g. <code>[doc5, doc6, doc9]</code>.</li>
+      <li>Fetch the user's ACL list, e.g. <code>[doc5, doc7, doc9]</code>.</li>
+      <li><strong>Intersect</strong> them → <code>[doc5, doc9]</code>, using the same INTERSECT algorithm as an AND query.</li>
+      </ol><p><strong>Challenges</strong>: an administrator's ACL can cover millions of documents, making the intersection slow, and permissions change constantly, which is the dynamic-indexing problem again. <strong>Workaround</strong>: many systems check permissions at the file-system level during final retrieval instead.</p>
+    </div>
+  </div>
+  <h3>Complexity summary</h3>
+  <div class="tbl"><table><thead><tr><th>Operation</th><th>Complexity</th></tr></thead><tbody>
+    <tr><td>Tokenisation, stop-word removal, stemming</td><td class="mono">O(T)</td></tr>
+    <tr><td>Merge of two postings lists</td><td class="mono">O(x + y)</td></tr>
+    <tr><td>Term lookup in the dictionary (tree)</td><td class="mono">O(log M)</td></tr>
+    <tr><td>In-memory sort / BSBI</td><td class="mono">Θ(T log T)</td></tr>
+    <tr><td>SPIMI</td><td class="mono">Θ(T)</td></tr>
+    <tr><td>Simple auxiliary merging</td><td class="mono">Θ(T² / n)</td></tr>
+    <tr><td>Logarithmic merging</td><td class="mono">Θ(T log(T / n))</td></tr>
+  </tbody></table></div>
   <h3>Numericals (all from the slides, answers verified)</h3>
   <div class="likely">
     <details class="q"><summary><span class="sec">B · 4</span><span>100M tokens, 8 B per pair, 2 GB of RAM. How many pairs fit in a block, and how many blocks are there?</span></summary><div class="ans"><p>2×10⁹ / 8 = <strong>250M pairs</strong> per block. 100M &lt; 250M, so <strong>1 block</strong> (100M/250M = 0.4, rounded up). If the question caps a block at 10M pairs, then 100M/10M = <strong>10 blocks</strong>. See the <a href="#traps">errata</a> about the slide's "1 GB = 10M pairs".</p></div></details>
@@ -457,6 +597,8 @@ Step 4 : (m&gt;1) EMENT→∅ (replacement→replac, cement→cement)  (m&gt;1) 
       <tr><td class="n">10</td><td>Z₀ → I₀</td><td>✓</td><td>–</td><td>✓</td></tr>
     </tbody></table></div><p>The occupied indexes follow the binary representation of T/n (5 = 101₂ → I₀ and I₂).</p></div></details>
     <details class="q"><summary><span class="sec">C · 7</span><span>Explain BSBI's merge phase with a min-heap, using f₁: bird[2] cat[1,2] dog[1] and f₂: bird[3] dog[3].</span></summary><div class="ans"><p>Heap starts as (bird,f₁), (bird,f₂). Pop bird: postings [2] and [3] merge to <code>bird→[2,3]</code>. Refill: (cat,f₁), (dog,f₂). Pop cat: <code>cat→[1,2]</code>. Refill: (dog,f₁). Pop dog: [1] + [3] gives <code>dog→[1,3]</code>. Read buffers per file and one write buffer turn random I/O into sequential I/O.</p></div></details>
+    <details class="q"><summary><span class="sec">C · 5</span><span>How does an IR system enforce security? Explain with access control lists.</span></summary><div class="ans"><p>Build a <strong>user–document access matrix</strong>: rows are users, columns documents, cell (i,j) = 1 if user i may read document j. Invert it per user so each user has an ACL postings list, e.g. <code>User_Alok → [doc5, doc7, doc9]</code>.</p><p>At query time: (1) run the text search to get candidates, say [doc5, doc6, doc9]; (2) fetch the user's ACL list [doc5, doc7, doc9]; (3) <strong>intersect</strong> the two with the standard merge algorithm, giving [doc5, doc9]. Only authorised documents are shown, and the filtering happens before results are displayed.</p><p>Challenges: an administrator's ACL may cover millions of documents, making the intersection slow, and permissions change constantly, which is the dynamic-indexing problem again. In practice many systems check permissions at the file-system level during final retrieval instead.</p></div></details>
+    <details class="q"><summary><span class="sec">B · 4</span><span>Document partitioning vs term partitioning for a distributed index.</span></summary><div class="ans"><p><strong>Document partitioning</strong>: each machine holds a complete index over a subset of documents. Every query is broadcast to every machine and the results are merged. Simple, resilient to a machine failing (you lose some documents, not some terms), and the usual choice in practice.</p><p><strong>Term partitioning</strong>: each machine holds all postings for a subset of terms. A query touches only the machines that hold its terms, which sounds cheaper, but a multi-term query has to ship whole postings lists between machines to intersect them. MapReduce's reduce phase is term partitioning by key range (a–f, g–p, q–z).</p></div></details>
   </div>
 </section>
 
@@ -468,7 +610,7 @@ Step 4 : (m&gt;1) EMENT→∅ (replacement→replac, cement→cement)  (m&gt;1) 
   <h3>Parametric &amp; zone indexes</h3>
   <ul><li><strong>Parametric</strong>: structured metadata fields (author, year, language) with a small value set. Queries filter by exact field values (<code>Author=Shakespeare AND Year=1601</code> → intersect the two field postings).</li>
   <li><strong>Zone</strong>: free-text regions (title, abstract, body). Encode the zone either in the dictionary (<code>merchant.title → D1</code>) or in the postings (<code>merchant → D1.title, D1.body</code>). The second keeps the dictionary smaller and makes weighted zone scoring easier.</li></ul>
-  <div class="formula">Weighted zone score(q,d) = Σᵢ gᵢ · sᵢ ,   Σ gᵢ = 1 ,  sᵢ ∈ {0,1} (does zone i match the query)<br>Author 0.2, Title 0.3, Body 0.5 · "Shakespeare" in D1 (title no?, author yes, body yes)</div>
+  <div class="formula">Weighted zone score(q,d) = Σᵢ gᵢ · sᵢ ,   Σ gᵢ = 1 ,  sᵢ ∈ {0,1} (does zone i match the query)<br>Slide weights: Author 0.2 · Title 0.3 · Body 0.5</div>
   <p class="src">A careful reading of the slide example: D1's title is "Merchant of Venice" and its author is "William Shakespeare", so the query <em>shakespeare</em> actually matches the <strong>author</strong> and <strong>body</strong> zones, giving 0.2 + 0.5 = 0.7. The slide marks Title=yes, Author=no and gets 0.8. Show the zone table and your reasoning, and you'll earn the method marks either way. Quick check from the slide: Title 0.4, Body 0.6, match only in the title gives <strong>0.4</strong>.</p>
   <h3>Term weighting</h3>
   <div class="formula">Jaccard(q,d) = |q ∩ d| / |q ∪ d|   → ignores tf, ignores rarity, poor length normalization<br>
@@ -482,12 +624,17 @@ overlap score  Score(q,d) = Σ_{t∈q∩d} tf-idf_t,d</div>
   <li><strong>Why log on idf</strong>: it dampens N/df. The base of the log doesn't matter for ranking.</li>
   <li><strong>idf has no effect on one-term queries</strong>, because it multiplies every document's score by the same constant. It matters for queries with two or more terms (e.g. <em>capricious person</em>).</li>
   <li><strong>cf vs df</strong>: <em>insurance</em> has cf 10440 and df 3997; <em>try</em> has cf 10422 and df 8760. Their cf is almost equal, but insurance clusters in fewer documents, so it is the better search term. That's why df, not cf, is used for weighting.</li>
-  <li><strong>Bag of words</strong>: order is ignored, so "John is quicker than Mary" = "Mary is quicker than John".</li></ul>
+  <li><strong>Bag of words</strong>: order is ignored, so "John is quicker than Mary" = "Mary is quicker than John". This is the same thing as assuming <em>term independence</em>.</li></ul>
   <h3>Vector space model</h3>
+  <p>Developed by <strong>Gerard Salton</strong> in the 1960s (the SMART system). The one-line motivation: Boolean asks <em>"does this document match?"</em>; the vector space model asks <em>"how well does it match?"</em></p>
   <ul><li>Each document and query is a |V|-dimensional tf-idf vector. The space is very high-dimensional and sparse.</li>
   <li><strong>Euclidean distance is a bad idea</strong>: it is large between vectors of different lengths even when their term distributions match. Take d and d′ = d appended to itself: same content, large distance, <strong>angle 0</strong>.</li>
   <li>Ranking by <em>increasing angle</em> is the same as ranking by <em>decreasing cosine</em>, because cosine is monotonically decreasing on [0°, 180°].</li></ul>
   <div class="formula">‖x‖₂ = √(Σ xᵢ²)      unit vector = x / ‖x‖₂<br>cos(q,d) = (q · d) / (‖q‖ ‖d‖) = Σ qᵢdᵢ / (√Σqᵢ² · √Σdᵢ²)<br>For length-normalized vectors: cos(q,d) = q · d</div>
+  <div class="grid2">
+    <div class="pane"><h4>Advantages of VSM</h4><ul><li>Ranked retrieval rather than a flat set</li><li>Partial matching: a document need not contain every query term</li><li>Similarity is a simple, efficient computation</li><li>Accepts free-text natural-language queries</li></ul></div>
+    <div class="pane"><h4>Limitations of VSM</h4><ul><li>Very high dimensionality (|V| can be 400,000)</li><li><strong>No semantics</strong>: <em>car</em> ≠ <em>automobile</em></li><li>Assumes <strong>term independence</strong> — the bag-of-words assumption above — so relationships between words are ignored</li><li>Computationally expensive at scale</li></ul></div>
+  </div>
   <h4>SMART notation <code>ddd.qqq</code></h4>
   <p>The three letters are tf, df and normalization. tf: <code>n</code> natural, <code>l</code> 1+log tf, <code>a</code> augmented 0.5 + 0.5·tf/max tf, <code>b</code> boolean. df: <code>n</code> none, <code>t</code> idf, <code>p</code> prob-idf. normalization: <code>n</code> none, <code>c</code> cosine. The standard scheme is <strong>lnc.ltc</strong>: documents get log tf, no idf and cosine normalization; queries get log tf, idf and cosine normalization.</p>
 
@@ -540,7 +687,10 @@ overlap score  Score(q,d) = Σ_{t∈q∩d} tf-idf_t,d</div>
   <div class="trap"><strong>lnc.ltc wording.</strong> One slide line says the query uses "no normalization", but the <code>c</code> in ltc means cosine, and the worked table does normalize the query (0.34, 0.52, 0.78). Normalize.</div>
   <div class="trap"><strong>Soundex variant.</strong> Your slides (and Manning) code h, w and y as 0, like vowels. The "official" American Soundex treats h and w differently, so some online calculators give different codes. Follow the slide table.</div>
   <div class="trap"><strong>Porter 1c.</strong> "sky → ski" breaks the <code>(*v*)</code> condition. See Unit 4.</div>
-  <div class="trap"><strong>Out of scope:</strong> the tf-idf deck opens with a recap of <em>index compression</em> (gap encoding, VB, γ codes). That is Lec 17, which is excluded.</div>
+  
+  <div class="trap"><strong>Edit distance for "aplpe".</strong> An exercise asks which of {apple, apply, applied, bat, batch, cat, catch} lie within edit distance 2 of <em>aplpe</em>, and answers {apple, apply}. Recomputed: under plain <strong>Levenshtein</strong>, apple = 2 but apply = <strong>3</strong>, so only <strong>apple</strong> qualifies. The given answer holds only under <strong>Damerau–Levenshtein</strong> (which allows transposition), where apple = 1 and apply = 2. State which metric you are using — that is the marks-bearing distinction.</div>
+  <div class="trap"><strong>"Skip pointers give O(&radic;n)."</strong> A complexity table lists skip-pointer intersection as O(&radic;n). The &radic; belongs to the <em>placement heuristic</em> (&radic;P evenly spaced pointers), not to the running time. Skips give a useful constant-factor, sublinear-in-practice speed-up, but the worst case is still <strong>O(x + y)</strong>. Say "sublinear in practice, O(x+y) worst case".</div>
+  <div class="trap"><strong>Out of scope, so skip it:</strong> the tf-idf deck opens with a recap of <em>index compression</em> (gap encoding, VB and γ codes), and one dictionary deck covers <em>front coding</em> (sequential and blocked). Both are Manning ch. 5 = Lec 17, which is excluded. Nothing from either is in this guide.</div>
 </section>
 
 <!-- ============ CHECKLIST ============ -->
@@ -570,8 +720,16 @@ overlap score  Score(q,d) = Σ_{t∈q∩d} tf-idf_t,d</div>
     <li><label><input type="checkbox" id="k20"><span>tf, log-tf, idf, tf-idf; cf vs df</span></label></li>
     <li><label><input type="checkbox" id="k21"><span>Cosine ranking end to end (lnc.ltc table)</span></label></li>
     <li><label><input type="checkbox" id="k22"><span>Why cosine, not Euclidean</span></label></li>
+    <li><label><input type="checkbox" id="k23"><span>Precision &amp; recall: formulas, a computation, and the trade-off</span></label></li>
+    <li><label><input type="checkbox" id="k24"><span>Forward index vs inverted index</span></label></li>
+    <li><label><input type="checkbox" id="k25"><span>Document delineation: physical / logical / automatic, and vs processing</span></label></li>
+    <li><label><input type="checkbox" id="k26"><span>Query optimisation: name 6+ techniques, incl. TAAT vs DAAT</span></label></li>
+    <li><label><input type="checkbox" id="k27"><span>ACLs: user&ndash;document matrix, ACL postings, intersection at query time</span></label></li>
+    <li><label><input type="checkbox" id="k28"><span>Over-stemming vs under-stemming, with examples</span></label></li>
+    <li><label><input type="checkbox" id="k29"><span>Dictionary structures: hash vs B-tree vs trie/FST, and which allow prefixes</span></label></li>
+    <li><label><input type="checkbox" id="k30"><span>Three types of information need; three types of IR system</span></label></li>
   </ul>
-  <p class="src">Sources: the CSE4144 handout (2026–27), lecture decks L1–L22, the skip-pointer reading, and Manning, Raghavan &amp; Schütze, <em>Introduction to Information Retrieval</em> (ch. 1–4, 6). Every numerical answer marked "verified" was recomputed in code.</p>
+  <p class="src">Sources: the CSE4144 handout (2026–27), both sets of lecture decks for L1–L22, the skip-pointer reading, and Manning, Raghavan &amp; Schütze, <em>Introduction to Information Retrieval</em> (ch. 1–4, 6). Every numerical answer marked "verified" was recomputed in code.</p>
 </section>
 </main>
 </div>
@@ -591,3 +749,5 @@ overlap score  Score(q,d) = Σ_{t∈q∩d} tf-idf_t,d</div>
   });
 })();
 </script>
+
+</body></html>
